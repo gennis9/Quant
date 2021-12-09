@@ -1,14 +1,14 @@
 import cvxopt as opt
+from cvxopt import solvers
 import ffn
 import numpy as np
 import matplotlib.pyplot as plt
-from cvxopt import solvers
 import scipy.interpolate as sci
 import scipy.optimize as sco
 %matplotlib inline
 
 #### Efficient Frontier
-data = ffn.get("2303.tw, 2317.tw, 2891.tw, 1727.tw, 2454.tw", start = "2015-01-01", end='2020-01-01')
+data = ffn.get("0005.hk, 0016.hk, 0027.hk, 0386.hk, 1038.hk", start = "2015-01-01", end='2021-01-01')
 days = data.shape[0]
 assets = data.shape[1]
 print(days)
