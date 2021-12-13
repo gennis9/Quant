@@ -8,7 +8,7 @@ import scipy.optimize as sco
 %matplotlib inline
 
 #### Efficient Frontier
-data = ffn.get("0005.hk, 0016.hk, 0027.hk, 0386.hk, 1038.hk", start = "2015-01-01", end='2021-01-01')
+data = ffn.get("0005.hk, 0016.hk, 0027.hk, 0386.hk, 1038.hk", start = "2015-01-01", end='2022-01-01')
 days = data.shape[0]
 assets = data.shape[1]
 print(days)
