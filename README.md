@@ -1,1 +1,1 @@
-### For "Quant" folder, it shows the codes for 
+### For "Quant" folder, its codes aims to show the proficiency on data processing, data analysis, and forecasting with econometric techniques and financial knowledges. For the detail description of each code, please refer to the annotation in each program file.
