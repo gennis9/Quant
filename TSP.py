@@ -13,10 +13,11 @@ import os
 import matplotlib.pyplot as plt
 import random
 from copy import deepcopy
+%matplotlib inline
 
 
 ## Set the path of data
-_Path = r'D:\03Programs_Clouds\Google Drive\NSYSU\03Optimization'
+# _Path = r'D:\03Programs_Clouds\Google Drive\NSYSU\03Optimization'
 os.chdir(_Path)
 
 pd.set_option('display.max_columns', 10)
@@ -245,12 +246,12 @@ Distance_improved = pd.DataFrame({
 
 # %% Visualization of 2-Opt Convergence History
 
-file = 5
+file = 8
 
 plt.figure(figsize=(8, 5))
 plt.plot(range(len(Distance_NN_2Opt[file])), Distance_NN_2Opt[file], marker='x', linestyle='-', color='b', label='NN')
 plt.plot(range(len(Distance_FN_2Opt[file])), Distance_FN_2Opt[file], marker='x', linestyle='-', color='r', label='FN')
-plt.title("2-Opt Convergence History of " + Data_FileNames[file][:-4])
+plt.title("Convergence History of " + Data_FileNames[file][:-4])
 plt.xlabel("Number of Times of Convergence")
 plt.ylabel("Total Distance of the Tour")
 plt.grid(True)
@@ -261,16 +262,14 @@ plt.show()
 draw_NN, draw_FN = [], []
 for i in range(1, len(Distance_NN_2Opt[file])):
     draw_NN.append( 100*(Distance_NN_2Opt[file][i-1] - Distance_NN_2Opt[file][i]) / Distance_NN_2Opt[file][i-1] )
-    
-for i in range(1, len(Distance_FN_2Opt[file])):
     draw_FN.append( 100*(Distance_FN_2Opt[file][i-1] - Distance_FN_2Opt[file][i]) / Distance_FN_2Opt[file][i-1] )
 
 plt.figure(figsize=(8, 5))
 plt.plot(range(1, len(Distance_NN_2Opt[file])), draw_NN, marker='x', linestyle='-', color='b', label='NN', alpha = 0.7)
-plt.plot(range(1, len(Distance_FN_2Opt[file])), draw_FN, marker='x', linestyle='-', color='r', label='FN', alpha = 0.5)
-plt.title("2-Opt Convergence History in Percnetage of " + Data_FileNames[file][:-4])
+plt.plot(range(1, len(Distance_NN_2Opt[file])), draw_FN, marker='x', linestyle='-', color='r', label='FN', alpha = 0.5)
+plt.title("Convergence History in Percnetage of " + Data_FileNames[file][:-4])
 plt.xlabel("Number of Times of Convergence")
-plt.ylabel("Improvement (Percentage)")
+plt.ylabel("Improvement (basis points)")
 plt.grid(True)
 plt.legend()
 plt.show()
@@ -326,40 +325,39 @@ def Func_Three_Opt(tour, dist_matrix):
 
 
 Tour_NN_3Opt, Distance_NN_3Opt, Tour_FN_3Opt, Distance_FN_3Opt  = [], [], [], []
-for file in [0, 1, 2, 4, 6, 7, 8, 9]:
 # for file in range(len(Coordinates)):
-    file = 7
-    # ## Record the tour initiated from 2-opt with nearest neighbor algorithm.
-    # tour = Func_Three_Opt( Tour_NN_2Opt[ file ], distance_matrices[ file ])
-    # Tour_NN_3Opt.append( tour[0] )
-    # Distance_NN_3Opt.append( tour[1] )
-    # print(file, ':NN')
-    
-    # Record the tour initiated from 2-opt with farthest neighbor algorithm.
-    tour = Func_Three_Opt( Tour_FN_2Opt[ file ], distance_matrices[ file ])
-    Tour_FN_3Opt.append( tour[0] )
-    Distance_FN_3Opt.append( tour[1] )
-    print(file, ':FN')
+file = 5
+## Record the tour initiated from 2-opt with nearest neighbor algorithm.
+tour = Func_Three_Opt( Tour_NN_2Opt[ file ], distance_matrices[ file ])
+Tour_NN_3Opt.append( tour[0] )
+Distance_NN_3Opt.append( tour[1] )
+print(file, ':NN')
+
+## Record the tour initiated from 2-opt with farthest neighbor algorithm.
+tour = Func_Three_Opt( Tour_FN_2Opt[ file ], distance_matrices[ file ])
+Tour_FN_3Opt.append( tour[0] )
+Distance_FN_3Opt.append( tour[1] )
+print(file, ':FN')
 
 
 Three_opt_NN, Three_opt_FN = [], []
-for file in range(len(Distance_NN_3Opt)):
-    temp = Distance_NN_3Opt[file][-1]
-    Three_opt_NN.append( temp )
-    
-    temp = Distance_FN_3Opt[file][-1]
-    Three_opt_FN.append( temp )
+# for file in range(len(Coordinates)):
+temp = Distance_NN_3Opt[file][-1]
+Three_opt_NN.append( temp )
+
+temp = Distance_FN_3Opt[file][-1]
+Three_opt_FN.append( temp )
 
 
-Distance_improved = pd.DataFrame({
-    'NN': Distance_NN,
-    'FN': Distance_FN,
-    '2_Opt_NN': Two_opt_NN,
-    '2_Opt_FN': Two_opt_FN,
-    '3_Opt_NN': Three_opt_NN,
-    '3_Opt_FN': Three_opt_FN,
-    }, index = [ name[:-4] for name in Data_FileNames ]
-    )
+# Distance_improved = pd.DataFrame({
+#     'NN': Distance_NN,
+#     'FN': Distance_FN,
+#     '2_Opt_NN': Two_opt_NN,
+#     '2_Opt_FN': Two_opt_FN,
+#     '3_Opt_NN': Three_opt_NN,
+#     '3_Opt_FN': Three_opt_FN,
+#     }, index = [ name[:-4] for name in Data_FileNames ]
+#     )
 
 
 
@@ -387,7 +385,6 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
     history = [ Func_Distance(tour, dist_matrix) ]
     temp_tabu_list = deepcopy(tabu_list)
     best_tours = []
-    best_tour = tour
     
     if stop_crit == 'iter_times':
         for t in range(iter_times):
@@ -403,10 +400,8 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
                         if Func_Distance(new_tour, dist_matrix) < Func_Distance(tour, dist_matrix):
                             tour = new_tour
                             temp_tabu_list.append( new_tour )
-                            history.append( Func_Distance(new_tour, dist_matrix) )
-                            best_tours.append( new_tour )
-                            if Func_Distance(new_tour, dist_matrix) < Func_Distance(best_tour, dist_matrix):
-                                best_tour = new_tour
+                            history.append( Func_Distance(tour, dist_matrix) )
+                            best_tours.append( tour )
                             local_optimum = False
                             break
                 if not local_optimum:
@@ -416,7 +411,7 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
             if local_optimum:
                 tabu_list.append(tour)
                 ## If a new better local optimum is found, clear the tabu list.
-                if Func_Distance(tour, dist_matrix) < Func_Distance(best_tour, dist_matrix):
+                if Func_Distance(tour, dist_matrix) < min([Func_Distance(tours, dist_matrix) for tours in tabu_list]):
                     temp_tabu_list = deepcopy(tabu_list)
                 
                 ## Jump out the local optimum to find the next optimum.
@@ -439,8 +434,6 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
                             temp_tabu_list.append( new_tour )
                             history.append( Func_Distance(tour, dist_matrix) )
                             best_tours.append( tour )
-                            if Func_Distance(new_tour, dist_matrix) < Func_Distance(best_tour, dist_matrix):
-                                best_tour = new_tour
                             local_optimum = False
                             break
                 if not local_optimum:
@@ -450,7 +443,7 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
             if local_optimum:
                 tabu_list.append(tour)
                 ## If a new better local optimum is found, clear the tabu list.
-                if Func_Distance(tour, dist_matrix) < Func_Distance(best_tour, dist_matrix):
+                if Func_Distance(tour, dist_matrix) < min([Func_Distance(tours, dist_matrix) for tours in tabu_list]):
                     temp_tabu_list = deepcopy(tabu_list)
                 
                 ## Jump out the local optimum to find the next optimum.
@@ -496,42 +489,42 @@ def Func_Tabu(tour, dist_matrix, tabu_list, stop_crit='iter_times', iter_times=1
     
     
 Tour_NN_Tabu, Distance_NN_Tabu, Tour_FN_Tabu, Distance_FN_Tabu  = [], [], [], []
-for file in [0, 1, 2, 4, 6, 7, 8, 9]:
 # for file in range(len(Coordinates)):
-    # file = 5
-    ## Record the tour initiated from 2-opt with nearest neighbor algorithm.
-    tour = Func_Tabu( Tour_NN_2Opt[file], distance_matrices[file], 
-                     [Tour_NN[file], Tour_FN[file], Tour_NN_2Opt[file], Tour_FN_2Opt[file]], 
-                     stop_crit='tabu_length', tabu_length=500 )
-    Tour_NN_Tabu.append( tour[0] )
-    Distance_NN_Tabu.append( tour[1] )
-    print(file, ':NN')
-    
-    ## Record the tour initiated from 2-opt with farthest neighbor algorithm.
-    tour = Func_Tabu( Tour_FN_2Opt[ file ], distance_matrices[ file ], 
-                     [Tour_NN[file], Tour_FN[file], Tour_NN_2Opt[file], Tour_FN_2Opt[file]], 
-                     stop_crit='tabu_length', tabu_length=1000 )
-    Tour_FN_Tabu.append( tour[0] )
-    Distance_FN_Tabu.append( tour[1] )
-    print(file, ':FN')
+file = 5
+## Record the tour initiated from 2-opt with nearest neighbor algorithm.
+tour = Func_Tabu( Tour_NN_2Opt[file], distance_matrices[file], 
+                 [Tour_NN[file], Tour_FN[file], Tour_NN_2Opt[file], Tour_FN_2Opt[file]], 
+                 stop_crit='tabu_length', tabu_length=1000 )
+Tour_NN_Tabu.append( tour[0] )
+Distance_NN_Tabu.append( tour[1] )
+print(file, ':NN')
+
+## Record the tour initiated from 2-opt with farthest neighbor algorithm.
+tour = Func_Tabu( Tour_FN_2Opt[ file ], distance_matrices[ file ], 
+                 [Tour_NN[file], Tour_FN[file], Tour_NN_2Opt[file], Tour_FN_2Opt[file]], 
+                 stop_crit='tabu_length', tabu_length=1000 )
+Tour_FN_Tabu.append( tour[0] )
+Distance_FN_Tabu.append( tour[1] )
+print(file, ':FN')
 
 
-Tabu_NN = [ min(file) for file in Distance_NN_Tabu ]
-Tabu_FN = [ min(file) for file in Distance_FN_Tabu ]
+Tabu_NN = [ min(Distance_NN_Tabu[file]) for file in Distance_NN_Tabu[file] ]
+Tabu_FN = [ min(Distance_FN_Tabu[file]) for file in Distance_FN_Tabu[file] ]
 
 
 
-Distance_improved = pd.DataFrame({
-    'NN': Distance_NN,
-    'FN': Distance_FN,
-    '2_Opt_NN': Two_opt_NN,
-    '2_Opt_FN': Two_opt_FN,
-    '3_Opt_NN': Three_opt_NN,
-    '3_Opt_FN': Three_opt_FN,
-    'Tabu_NN' : Tabu_NN,
-    'Tabu_FN' : Tabu_FN,
-    }, index = [ name[:-4] for name in Data_FileNames ]
-    )
+# Distance_improved = pd.DataFrame({
+#     'NN': Distance_NN,
+#     'FN': Distance_FN,
+#     '2_Opt_NN': Two_opt_NN,
+#     '2_Opt_FN': Two_opt_FN,
+#     '3_Opt_NN': Three_opt_NN,
+#     '3_Opt_FN': Three_opt_FN,
+#     'Tabu_NN' : Tabu_NN,
+#     'Tabu_FN' : Tabu_FN,
+#     }, index = [ name[:-4] for name in Data_FileNames ]
+#     )
+
 
 
 
@@ -657,14 +650,15 @@ def Func_PSO(dist_matrix, num_particles=30, iter_times=100000, r_1 = 0.5, r_2 = 
 
 
 Tour_PSO, Cov_History_PSO  = [], []
-for file in [0, 1, 2, 4, 6, 7, 8, 9]:
 # for file in range(len(Coordinates)):
+for file in range(6, 10):
+    # file = 5
     tour = Func_PSO( distance_matrices[file], 
-                     num_particles=50, iter_times=1000, 
+                     num_particles=100, iter_times=5000, 
                      r_1 = 0.5, r_2 = 0.5, c_1 = 2, c_2 = 2, w = 0.7 )
     Tour_PSO.append( tour[0] )
     Cov_History_PSO.append( tour[1] )
-    print(file, ':PSO')
+    print(file, ':NN')
     
 
 Dist_PSO = [ file[-1][1] for file in Cov_History_PSO ]
@@ -829,10 +823,11 @@ def Func_Hybrid(dist_matrix, num_particles=30, iter_times=100000, r_1 = 0.5, r_2
 
 
 Tour_Hybrid, Cov_History_Hybrid  = [], []
-for file in [0, 1, 2, 4, 6, 7, 8, 9]:
 # for file in range(len(Coordinates)):
+for file in [4, 6, 7, 8, 9]:
+    # file = 5
     tour = Func_Hybrid( distance_matrices[file], 
-                     num_particles=30, iter_times=1000, 
+                     num_particles=50, iter_times=5000, 
                      r_1 = 0.5, r_2 = 0.5, c_1 = 2, c_2 = 2 )
     Tour_Hybrid.append( tour[0] )
     Cov_History_Hybrid.append( tour[1] )
@@ -848,88 +843,37 @@ Dist_Hybrid = [ file[-1][1] for file in Cov_History_Hybrid ]
 
 
 
-# %% Visualization: 3-Opt
+# %% Visualization: PSO
 
-file = 6
+file = 3
+
+x = [ cov[0] for cov in Cov_History_PSO[file] ]
+y = [ cov[1] for cov in Cov_History_PSO[file] ]
 
 plt.figure(figsize=(8, 5))
-plt.plot(range(len(Distance_NN_3Opt[file-2])), Distance_NN_3Opt[file-2], marker='x', linestyle='-', color='b', label='NN')
-plt.plot(range(len(Distance_FN_3Opt[file])), Distance_FN_3Opt[file], marker='x', linestyle='-', color='r', label='FN')
-plt.title("3-Opt Convergence History of " + Data_FileNames[file][:-4])
+plt.plot(x, y, marker='x', linestyle='-', color='b')
+plt.title("PSO Convergence History of " + Data_FileNames[file+6][:-4])
 plt.xlabel("Number of Times of Convergence")
 plt.ylabel("Total Distance of the Tour")
 plt.grid(True)
-plt.legend()
 plt.show()
 
 
 Data_FileNames[file][:-4]
-
-
-
-# %% Visualization: Tabu vs Opt
-
-
-
-
-
-file = 9
-
-plt.figure(figsize=(8, 5))
-plt.plot(range(len(Distance_NN_2Opt[file])), Distance_NN_2Opt[file], marker='x', linestyle='-', color='b', label='2-Opt_NN')
-plt.plot(range(len(Distance_NN_3Opt[file-2])), Distance_NN_3Opt[file-2], marker='x', linestyle='-', color='r', label='3-Opt_NN')
-plt.plot(range(len(Table_Tabu.iloc[file-1, :497])), Table_Tabu.iloc[file-1, :497], marker='x', linestyle='-', color='g', label='Tabu_2-Opt_NN')
-plt.title("Tabu Search Convergence History of " + Data_FileNames[file][:-4])
-plt.xlabel("Number of Times of Convergence")
-plt.ylabel("Total Distance of the Tour")
-plt.grid(True)
-plt.legend(loc='upper right')
-plt.show()
-
-
-Data_FileNames[file][:-4]
-
-
-
-
-
-# Set the working directory of the main folder.
-# Folder = r'D:\03Clouds\Google Drive\NSYSU\00CFARC\Modeling'
-Folder = r'D:\03Programs_Clouds\Google Drive\NSYSU\03Optimization\HW4'
-os.chdir(Folder)
-
-# Import the revenue data.
-Table_Tabu = pd.read_csv('Tabu.csv', header = None)
-
-
-
-
-
-
-
-import csv
-# Write to CSV
-with open('output.csv', 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerows(Distance_NN_Tabu)
-
-
-
-
 
 
 
 
 # %% Visualization: Hybrid
 
-file = 4
+file = 0
 
 x = [ cov[0] for cov in Cov_History_Hybrid[file] ]
 y = [ cov[1] for cov in Cov_History_Hybrid[file] ]
 
 plt.figure(figsize=(8, 5))
 plt.plot(x, y, marker='x', linestyle='-', color='b')
-plt.title("Hybrid: PSO-2-Opt Convergence History of " + Data_FileNames[file-1][:-4])
+plt.title("Hybrid: PSO-2-Opt Convergence History of " + Data_FileNames[file][:-4])
 plt.xlabel("Number of Times of Convergence")
 plt.ylabel("Total Distance of the Tour")
 plt.grid(True)
@@ -937,62 +881,6 @@ plt.show()
 
 
 Data_FileNames[file][:-4]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
